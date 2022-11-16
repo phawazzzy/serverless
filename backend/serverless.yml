@@ -2,7 +2,6 @@ org: phawazzzy
 app: fawas-serverless-project
 service: fawas-serverless-project
 
-frameworkVersion: '3'
 
 custom:
   webpack:
@@ -12,6 +11,8 @@ custom:
 plugins:
   - serverless-webpack
   - serverless-iam-roles-per-function
+  - serverless-reqvalidator-plugin
+  - serverless-aws-documentation
 
 provider:
   name: aws
@@ -66,6 +67,8 @@ functions:
           request:
             schema:
               application/json: ${file(schemas/create-todo-request.json)}
+          reqValidatorName: 'BodyRequestValidator'
+        
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -189,3 +192,12 @@ resources:
                 - DELETE
                 - HEAD
               MaxAge: 3000
+
+    BodyRequestValidator:  
+      Type: "AWS::ApiGateway::RequestValidator"
+      Properties:
+        Name: 'my-req-validator'
+        RestApiId: 
+          Ref: ApiGatewayRestApi
+        ValidateRequestBody: true
+        ValidateRequestParameters: true
