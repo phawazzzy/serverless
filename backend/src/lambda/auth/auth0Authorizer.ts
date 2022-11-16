@@ -69,10 +69,10 @@ async function getSecret(kid: string): Promise<string> {
 
 async function getSigningKeys() {
   if (!signingKeys) {
-    const keys = await Axios.get(jwksUrl);
+    const { data } = await Axios.get(jwksUrl);
     // .then((res) => res.data.keys || []);
 
-    signingKeys = keys.data.keys  || []
+    signingKeys = data.keys
       .filter(
         (key: any) =>
           key.use === "sig" && // JWK property `use` determines the JWK is for signing
